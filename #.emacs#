@@ -22,12 +22,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cperl-array-face ((((class color) (min-colors 89)) (:background unspecified :foreground "#dc322f"))))
- '(cperl-hash-face ((((class color) (min-colors 89)) (:background unspecified :foreground "#dc322f"))))
- '(cperl-nonoverridable-face ((t (:foreground "#2aa198" :weight bold))))
- '(font-lock-comment-face ((t (:foreground "darkslategray"))))
- '(font-lock-keyword-face ((((class color) (min-colors 89)) (:foreground "#6c71c4" :weight unspecified))))
- '(font-lock-string-face ((t (:foreground "#859900")))))
+ '(font-lock-comment-face ((t (:foreground "darkslategray")))))
 
 (defvar gbhat/packages '( auto-complete
                           fill-column-indicator
@@ -237,8 +232,7 @@
 (global-set-key (kbd "C-x C-r") (lambda () (interactive) (revert-buffer nil t)))
 
 (require 'fill-column-indicator)
-;; (setq fci-rule-character-color "#073642")
-(setq fci-rule-character-color "#404040")
+(setq fci-rule-character-color "#073642")
 (setq fci-rule-column 80)
 (setq fci-rule-character 9474)
 (setq fci-always-use-textual-rule t)
