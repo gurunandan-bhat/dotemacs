@@ -6,6 +6,7 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("org"   . "http://orgmode.org/elpa/"))
+(add-to-list 'package-archives '("gnu"   . "http://elpa.gnu.org/packages/"))
 (package-initialize)
 
 (custom-set-variables
@@ -16,7 +17,7 @@
  '(custom-safe-themes
    '("4c56af497ddf0e30f65a7232a8ee21b3d62a8c332c6b268c81e9ea99b11da0d3" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" default))
  '(package-selected-packages
-   '(web-mode solarized-theme smart-mode-line-powerline-theme smart-mode-line powerline paredit markdown-mode magit js2-mode go-mode fill-column-indicator auto-complete)))
+   '(flycheck lsp-mode ## rustic web-mode solarized-theme smart-mode-line-powerline-theme smart-mode-line powerline paredit markdown-mode magit js2-mode go-mode fill-column-indicator auto-complete)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -31,17 +32,23 @@
 
 (defvar gbhat/packages '( auto-complete
                           fill-column-indicator
+			  flycheck
 			  go-mode
+			  gnu-elpa-keyring-update
                           js2-mode
+			  lsp-mode
                           magit
                           markdown-mode
                           org
                           paredit
                           powerline
+			  rustic
                           smart-mode-line
                           smart-mode-line-powerline-theme
 			  solarized-theme
-                          web-mode)
+			  use-package
+                          web-mode
+			  xref)
   "Default packages")
                                         ; fetch the list of packages available
 (unless package-archive-contents
@@ -178,19 +185,6 @@
   (dolist (re '("\\\\│\·*\n" "\W*│\·*"))
     (replace-regexp re "" nil beg end)))
 
-(defun whack-whitespace (arg)
-  "Delete all white space from point to the next word.  With prefix ARG
-    delete across newlines as well.  The only danger in this is that you
-    don't have to actually be at the end of a word to make it work.  It
-    skips over to the next whitespace and then whacks it all to the next
-    word."
-  (interactive "P")
-  (let ((regexp (if arg "[ \t\n]+" "[ \t]+")))
-    (re-search-forward regexp nil t)
-    (replace-match "" nil nil)
-    )
-  )
-
 (global-set-key (kbd "C-x M-t") 'cleanup-region)
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 
@@ -221,6 +215,7 @@
 ;;============== Line number mode =======================
 (global-linum-mode 1)
 (setq linum-format "%4d \u2502 ")
+;; (global-display-line-numbers-mode)
 
 ;;============== Remove trailing whitespace ============
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -265,3 +260,5 @@
   (balance-windows)
   (other-window 1))
 (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
+
+(use-package rustic)
