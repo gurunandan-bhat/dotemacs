@@ -17,7 +17,7 @@
  '(custom-safe-themes
    '("4c56af497ddf0e30f65a7232a8ee21b3d62a8c332c6b268c81e9ea99b11da0d3" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" default))
  '(package-selected-packages
-   '(flycheck lsp-mode ## rustic web-mode solarized-theme smart-mode-line-powerline-theme smart-mode-line powerline paredit markdown-mode magit js2-mode go-mode fill-column-indicator auto-complete)))
+   '(lsp-ui flycheck lsp-mode ## rustic web-mode solarized-theme paredit markdown-mode magit js2-mode go-mode fill-column-indicator auto-complete)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -31,6 +31,7 @@
  '(font-lock-string-face ((t (:foreground "#859900")))))
 
 (defvar gbhat/packages '( auto-complete
+			  company
                           fill-column-indicator
 			  flycheck
 			  go-mode
@@ -41,14 +42,12 @@
                           markdown-mode
                           org
                           paredit
-                          powerline
 			  rustic
-                          smart-mode-line
-                          smart-mode-line-powerline-theme
 			  solarized-theme
 			  use-package
                           web-mode
-			  xref)
+			  xref
+			  yasnippet)
   "Default packages")
                                         ; fetch the list of packages available
 (unless package-archive-contents
@@ -220,13 +219,7 @@
 ;;============== Remove trailing whitespace ============
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-(require 'powerline)
 (put 'upcase-region 'disabled nil)
-
-(sml/setup)
-(sml/apply-theme 'respectful)
-(setq sml/shorten-directory t)
-(setq sml/mode-width 'full)
 (put 'downcase-region 'disabled nil)
 
 (global-set-key (kbd "C-x C-r") (lambda () (interactive) (revert-buffer nil t)))
@@ -261,4 +254,82 @@
   (other-window 1))
 (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 
-(use-package rustic)
+(setq debug-on-error t)
+
+(use-package rustic
+  :ensure
+  :bind (:map rustic-mode-map
+              ("M-j" . lsp-ui-imenu)
+              ("M-?" . lsp-find-references)
+              ("C-c C-c l" . flycheck-list-errors)
+              ("C-c C-c a" . lsp-execute-code-action)
+              ("C-c C-c r" . lsp-rename)
+              ("C-c C-c q" . lsp-workspace-restart)
+              ("C-c C-c Q" . lsp-workspace-shutdown)
+              ("C-c C-c s" . lsp-rust-analyzer-status))
+  :config
+  ;; uncomment for less flashiness
+  ;; (setq lsp-eldoc-hook nil)
+  ;; (setq lsp-enable-symbol-highlighting nil)
+  ;; (setq lsp-signature-auto-activate nil)
+
+  ;; comment to disable rustfmt on save
+  (setq rustic-format-on-save t)
+  (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook)
+  (setq lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer")))
+
+(defun rk/rustic-mode-hook ()
+  ;; so that run C-c C-c C-r works without having to confirm, but don't try to
+  ;; save rust buffers that are not file visiting. Once
+  ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
+  ;; no longer be necessary.
+  (when buffer-file-name
+    (setq-local buffer-save-without-query t)))
+
+;; (use-package rustic
+;;   :ensure
+;;   :config
+;;   (setq lsp-rust-analyzer-server-command '("~/.cargo/bin/rust-analyzer"))
+;;   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+
+;; (use-package flycheck :ensure)
+
+
+;; (use-package lsp-mode
+;;   :ensure
+;;   :commands lsp
+;;   :custom
+;;   ;; what to use when checking on-save. "check" is default, I prefer clippy
+;;   (lsp-rust-analyzer-cargo-watch-command "clippy")
+;;   (lsp-eldoc-render-all t)
+;;   (lsp-idle-delay 0.6)
+;;   (lsp-rust-analyzer-server-display-inlay-hints nil)
+;;   :config
+;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+;; (use-package lsp-ui
+;;   :ensure
+;;   :commands lsp-ui-mode
+;;   :custom
+;;   (lsp-ui-peek-always-show t)
+;;   (lsp-ui-sideline-show-hover t)
+;;   (lsp-ui-doc-enable nil))
+
+;; (use-package company
+;;   :ensure
+;;   :custom
+;;   (company-idle-delay 0.5) ;; how long to wait until popup
+;;   ;; (company-begin-commands nil) ;; uncomment to disable popup
+;;   :bind
+;;   (:map company-active-map
+;; 	      ("C-n". company-select-next)
+;; 	      ("C-p". company-select-previous)
+;; 	      ("M-<". company-select-first)
+;; 	      ("M->". company-select-last)))
+
+;; (use-package yasnippet
+;;   :ensure
+;;   :config
+;;   (yas-reload-all)
+;;   (add-hook 'prog-mode-hook 'yas-minor-mode)
+;;   (add-hook 'text-mode-hook 'yas-minor-mode))
