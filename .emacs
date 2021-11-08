@@ -42,6 +42,9 @@
                           markdown-mode
                           org
                           paredit
+			  powerline
+			  smart-mode-line
+			  rust-mode
 			  rustic
 			  solarized-theme
 			  use-package
@@ -333,3 +336,6 @@
 ;;   (yas-reload-all)
 ;;   (add-hook 'prog-mode-hook 'yas-minor-mode)
 ;;   (add-hook 'text-mode-hook 'yas-minor-mode))
+(require 'powerline)
+(powerline-default-theme)
+(sml/setup)
