@@ -415,5 +415,5 @@
 
 
 (require 'powerline)
-(powerline-default-theme)
+(powerline-center-theme)
 (sml/setup)
