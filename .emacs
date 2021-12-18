@@ -30,7 +30,8 @@
  '(font-lock-keyword-face ((((class color) (min-colors 89)) (:foreground "#6c71c4" :weight unspecified))))
  '(font-lock-string-face ((t (:foreground "#859900")))))
 
-(defvar gbhat/packages '( auto-complete
+(defvar gbhat/packages '( auctex
+			  auto-complete
 			  company
                           fill-column-indicator
 			  flycheck
@@ -416,4 +417,3 @@
 
 (require 'powerline)
 (powerline-center-theme)
-(sml/setup)
