@@ -2,6 +2,7 @@
 (setq user-full-name "Gurunandan Bhat")
 (setq user-mail-address "gbhat@pobox.com")
 
+
 ;; The shiny new package management
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
@@ -32,6 +33,7 @@
 
 (defvar gbhat/packages '( auctex
 			  auto-complete
+			  cc-mode
 			  company
                           fill-column-indicator
 			  flycheck
@@ -180,7 +182,8 @@
   (interactive)
   (indent-buffer)
   (untabify-buffer)
-  (delete-trailing-whitespace))
+  (unless (derived-mode-p 'markdown-mode)
+    delete-trailing-whitespace))
 
 (defun cleanup-region (beg end)
   "Remove tmux artifacts from region."
@@ -221,7 +224,10 @@
 ;; (global-display-line-numbers-mode)
 
 ;;============== Remove trailing whitespace ============
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook
+	  (lambda ()
+	    (unless (derived-mode-p 'markdown-mode)
+	      (delete-trailing-whitespace))))
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
@@ -417,3 +423,23 @@
 
 (require 'powerline)
 (powerline-center-theme)
+(setq-default c-basic-offset 4)
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("\\.md\\'" . gfm-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+(add-hook 'markdown-mode-hook 'turn-on-auto-fill)
+(dolist (hook '(markdown-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
