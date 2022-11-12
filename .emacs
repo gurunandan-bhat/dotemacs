@@ -32,28 +32,29 @@
  '(font-lock-string-face ((t (:foreground "#859900")))))
 
 (defvar gbhat/packages '( auctex
-			  auto-complete
-			  cc-mode
-			  company
+                          auto-complete
+                          cc-mode
+                          company
                           fill-column-indicator
-			  flycheck
-			  go-mode
-			  gnu-elpa-keyring-update
+                          flycheck
+                          go-mode
+                          gnu-elpa-keyring-update
                           js2-mode
-			  lsp-mode
+                          lsp-mode
                           magit
                           markdown-mode
                           org
                           paredit
-			  powerline
-			  smart-mode-line
-			  rust-mode
-			  rustic
-			  solarized-theme
-			  use-package
+                          powerline
+                          smart-mode-line
+                          rust-mode
+                          rustic
+                          solarized-theme
+                          use-package
                           web-mode
-			  xref
-			  yasnippet)
+                          xref
+						  yaml-mode
+                          yasnippet)
   "Default packages")
                                         ; fetch the list of packages available
 (unless package-archive-contents
@@ -107,6 +108,8 @@
 (setq tab-width 4
       indent-tabs-mode nil)
 (setq tab-stop-list (number-sequence 4 200 4))
+(defvaralias 'c-basic-offset 'tab-width)
+(defvaralias 'cperl-indent-level 'tab-width)
 
 ;; Backup files
 (setq make-backup-files nil)
@@ -225,9 +228,9 @@
 
 ;;============== Remove trailing whitespace ============
 (add-hook 'before-save-hook
-	  (lambda ()
-	    (unless (derived-mode-p 'markdown-mode)
-	      (delete-trailing-whitespace))))
+          (lambda ()
+            (unless (derived-mode-p 'markdown-mode)
+              (delete-trailing-whitespace))))
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
@@ -243,8 +246,8 @@
 
 (defun my-change-window-divider ()
   (let ((display-table (or buffer-display-table
-			   standard-display-table
-			   (make-display-table))))
+                           standard-display-table
+                           (make-display-table))))
     (set-display-table-slot display-table 5 ?│)
     (set-window-display-table (selected-window) display-table)))
 
@@ -350,10 +353,10 @@
   :ensure
   :bind
   (:map company-active-map
-              ("C-n". company-select-next)
-              ("C-p". company-select-previous)
-              ("M-<". company-select-first)
-              ("M->". company-select-last))
+        ("C-n". company-select-next)
+        ("C-p". company-select-previous)
+        ("M-<". company-select-first)
+        ("M->". company-select-last))
   (:map company-mode-map
         ("<tab>". tab-indent-or-complete)
         ("TAB". tab-indent-or-complete)))
@@ -415,7 +418,7 @@
      (list :type "lldb"
            :request "launch"
            :name "LLDB::Run"
-	   :gdbpath "rust-lldb"
+           :gdbpath "rust-lldb"
            ;; uncomment if lldb-mi is not in PATH
            ;; :lldbmipath "path/to/lldb-mi"
            ))))
@@ -424,7 +427,15 @@
 (require 'powerline)
 (powerline-center-theme)
 (setq-default c-basic-offset 4)
+
 (require 'web-mode)
+(defun my-web-mode-hook ()
+  "Hooks for Web mode."
+  (setq web-mode-markup-indent-offset 4)
+  )
+(add-hook 'web-mode-hook  'my-web-mode-hook)
+
+(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\'" . web-mode))
