@@ -221,11 +221,6 @@
   (indent-region (point-min) (point-max) nil)
   (untabify (point-min) (point-max)))
 
-;;============== Line number mode =======================
-(global-linum-mode 1)
-(setq linum-format "%4d \u2502 ")
-;; (global-display-line-numbers-mode)
-
 ;;============== Remove trailing whitespace ============
 (add-hook 'before-save-hook
           (lambda ()
