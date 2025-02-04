@@ -1,0 +1,115 @@
+;; Who am I
+(setq user-full-name "Gurunandan Bhat")
+(setq user-mail-address "gbhat@pobox.com")
+
+
+;; The shiny new package management
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu"   . "http://elpa.gnu.org/packages/"))
+(package-initialize)
+
+(defvar gbhat/packages '(
+                         kanagawa-themes
+                         markdown-mode
+			 zenburn-theme
+                         )  "Default packages")
+
+                                        ; fetch the list of packages available
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(dolist (package gbhat/packages)
+  (unless (package-installed-p package)
+    (package-install package)))
+
+(load-theme 'zenburn t)
+
+;; Take me to the scratch mode straight away
+(setq inhibit-splash-screen t
+      initial-scratch-message nil)
+
+;; Hide the various bars
+;; (scroll-bar-mode -1)
+(if window-system (tool-bar-mode -1))
+(menu-bar-mode -1)
+
+;; Shows empty line on left
+(when window-system
+  (setq frame-title-format '(buffer-file-name "%f" ("%b"))))
+
+(setq-default
+ frame-title-format
+ (list '((buffer-file-name " %f" (
+                                  dired-directory
+                                  dired-directory
+                                  (revert-buffer-function " %b"
+                                                          ("%b - Dir:  " default-directory)))))))
+;; Marking text
+(delete-selection-mode t)
+(transient-mark-mode t)
+(setq x-select-enable-clipboard t)
+
+;; Backup files
+(setq make-backup-files nil)
+;; :)
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; scroll line by line
+(setq scroll-step 1)
+
+;; Some nice key bindings
+(global-set-key (kbd "RET") 'newline-and-indent)
+(global-set-key (kbd "C-;") 'comment-or-uncomment-region)
+(global-set-key (kbd "M-g") 'goto-line)
+(global-set-key (kbd "M-G") 'what-line)
+(global-set-key (kbd "<f11>") 'undo)
+(global-set-key (kbd "C-S-s") 'isearch-forward-symbol-at-point)
+
+;; Misc
+(setq echo-keystrokes 0.1
+      use-dialog-box nil
+      visible-bell t)
+
+(setq show-paren-delay 0)
+(show-paren-mode t)
+(setq column-number-mode t)
+
+(setq lisp-modes '(lisp-mode
+                   emacs-lisp-mode
+                   common-lisp-mode
+                   scheme-mode
+                   clojure-mode))
+
+(defvar lisp-power-map (make-keymap))
+
+(define-minor-mode lisp-power-mode "Fix keybindings; add power."
+  :lighter " (power)"
+  :keymap lisp-power-map
+  (paredit-mode t))
+(define-key lisp-power-map [delete] 'paredit-forward-delete)
+(define-key lisp-power-map [backspace] 'paredit-backward-delete)
+
+(defun untabify-buffer ()
+  (interactive)
+  (untabify (point-min) (point-max)))
+
+(defun indent-buffer ()
+  (interactive)
+  (indent-region (point-min) (point-max)))
+
+;;Set line width to 80 columns
+(setq fill-column 80)
+(setq auto-fill-mode t)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages '(zenburn-theme markdown-mode kanagawa-themes)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

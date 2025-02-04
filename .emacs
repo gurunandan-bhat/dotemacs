@@ -104,7 +104,6 @@
   (toggle-indicate-empty-lines))
 
 ;; Sane tab handling. Change to spaces
-
 (setq tab-width 4
       indent-tabs-mode nil)
 (setq tab-stop-list (number-sequence 4 200 4))
